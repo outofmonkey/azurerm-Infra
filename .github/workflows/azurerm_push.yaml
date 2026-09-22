@@ -2,6 +2,7 @@
 name: Terraform AzureRM Test
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

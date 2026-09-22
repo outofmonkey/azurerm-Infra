@@ -29,8 +29,5 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Terraform Destroy Plan
-        run: terraform plan -destroy
-
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
