@@ -1,11 +1,11 @@
-# =========================================================
+_resourc# =========================================================
 # PUBLIC IP - VM01
 # =========================================================
 
 resource "azurerm_public_ip" "vm01_public_ip" {
   name                = "vm01-public-ip"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   allocation_method = "Static"
   sku               = "Standard"
@@ -17,8 +17,8 @@ resource "azurerm_public_ip" "vm01_public_ip" {
 
 resource "azurerm_public_ip" "vm02_public_ip" {
   name                = "vm02-public-ip"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   allocation_method = "Static"
   sku               = "Standard"
@@ -30,8 +30,8 @@ resource "azurerm_public_ip" "vm02_public_ip" {
 
 resource "azurerm_network_interface" "vniccard01" {
   name                = "nic-vmnodebot1"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   ip_configuration {
     name                          = "internal"
@@ -47,8 +47,8 @@ resource "azurerm_network_interface" "vniccard01" {
 
 resource "azurerm_network_interface" "vniccard02" {
   name                = "nic-vmnodebot2"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   ip_configuration {
     name                          = "internal"
@@ -64,8 +64,8 @@ resource "azurerm_network_interface" "vniccard02" {
 
 resource "azurerm_linux_virtual_machine" "vlinux01" {
   name                = "debbot01"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   size           = "Standard_D4_v3"
   admin_username = "adminuser"
@@ -116,8 +116,8 @@ resource "azurerm_linux_virtual_machine" "vlinux01" {
 
 resource "azurerm_linux_virtual_machine" "vlinux02" {
   name                = "debbot02"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   size           = "Standard_D4_v3"
   admin_username = "adminuser"

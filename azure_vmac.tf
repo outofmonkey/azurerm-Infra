@@ -26,8 +26,8 @@ data "azurerm_resource_group" "resgroup" {
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   address_space = ["172.168.0.0/20"]
 }
@@ -38,7 +38,7 @@ resource "azurerm_virtual_network" "vnet" {
 
 resource "azurerm_subnet" "psubnet" {
   name                 = "public-subnet"
-  resource_group_name  = azurerm_resource_group.resgroup.name
+  resource_group_name  = data.data.azurerm_resource_group.resgroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
 
   address_prefixes = ["172.168.0.0/24"]
@@ -50,8 +50,8 @@ resource "azurerm_subnet" "psubnet" {
 
 resource "azurerm_network_security_group" "web_nsg" {
   name                = "web-nsg"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
+  location            = data.azurerm_resource_group.resgroup.location
+  resource_group_name = data.azurerm_resource_group.resgroup.name
 
   # -------------------------------------------------------
   # HTTP
