@@ -1,5 +1,40 @@
-.terrafom
+# Terraform
+.terraform/*
 *.tfstate
-*.hcl
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Terraform plan files
+*.tfplan
+tfplan
+
+# Variable files that may contain secrets
+*.tfvars
+*.tfvars.json
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform lock file - KEEP THIS FILE TRACKED
+# .terraform.lock.hcl should NOT be ignored
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+#txt
 *.txt
-venv

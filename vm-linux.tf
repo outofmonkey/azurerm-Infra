@@ -67,7 +67,7 @@ resource "azurerm_linux_virtual_machine" "vlinux01" {
   location            = data.azurerm_resource_group.resgroup.location
   resource_group_name = data.azurerm_resource_group.resgroup.name
 
-  size           = "Standard_D4_v3"
+  size = "Standard_D4_v3"
   network_interface_ids = [
     azurerm_network_interface.vniccard01.id
   ]
@@ -75,8 +75,8 @@ resource "azurerm_linux_virtual_machine" "vlinux01" {
   # -------------------------------------------------------
   # SSH Key / Username and Password
   # -------------------------------------------------------
- admin_username = var.admin_username
-  admin_password = var.admin_password
+  admin_username                  = var.admin_username
+  admin_password                  = var.admin_password
   disable_password_authentication = false
 
   # admin_ssh_key {
@@ -120,7 +120,7 @@ resource "azurerm_linux_virtual_machine" "vlinux02" {
   location            = data.azurerm_resource_group.resgroup.location
   resource_group_name = data.azurerm_resource_group.resgroup.name
 
-  size           = "Standard_D4_v3"
+  size = "Standard_D4_v3"
 
 
   network_interface_ids = [
@@ -135,10 +135,10 @@ resource "azurerm_linux_virtual_machine" "vlinux02" {
   #   public_key = file("~/.ssh/id_rsa.pub")
   # }
 
-  admin_username = var.admin_username
-  admin_password = var.admin_password
+  admin_username                  = var.admin_username
+  admin_password                  = var.admin_password
   disable_password_authentication = false
- 
+
 
   # -------------------------------------------------------
   # OS Disk
