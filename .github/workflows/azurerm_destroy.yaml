@@ -12,48 +12,55 @@ jobs:
     name: Terraform Destroy
     runs-on: ubuntu-latest
 
+    environment:
+      name: terraform-test
+
+    env:
+      TF_VAR_admin_username: ${{ secrets.ADMIN_USERNAME }}
+      TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}
+
     steps:
 
       # --------------------------------------------------
-      # Checkout Repository
+      # Checkout
       # --------------------------------------------------
+
       - name: Checkout
         uses: actions/checkout@v4
 
       # --------------------------------------------------
-      # Setup Terraform
+      # Terraform
       # --------------------------------------------------
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       # --------------------------------------------------
       # Terraform Init
       # --------------------------------------------------
+
       - name: Terraform Init
         run: terraform init
 
       # --------------------------------------------------
       # Azure Login
       # --------------------------------------------------
+
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # --------------------------------------------------
-      # Terraform Destroy Plan
+      # Destroy Plan
       # --------------------------------------------------
+
       - name: Terraform Destroy Plan
-        env:
-          TF_VAR_admin_username: ${{ secrets.ADMIN_USERNAME }}
-          TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}
-        run: terraform plan -destroy
+        run: terraform plan -destroy -out=destroy.tfplan
 
       # --------------------------------------------------
-      # Terraform Destroy
+      # Destroy
       # --------------------------------------------------
+
       - name: Terraform Destroy
-        env:
-          TF_VAR_admin_username: ${{ secrets.ADMIN_USERNAME }}
-          TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve destroy.tfplan
