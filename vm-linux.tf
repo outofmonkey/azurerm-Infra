@@ -67,7 +67,7 @@ resource "azurerm_linux_virtual_machine" "vlinux01" {
   location            = data.azurerm_resource_group.resgroup.location
   resource_group_name = data.azurerm_resource_group.resgroup.name
 
-  size = "Standard_D4_v3"
+  size = "Standard_B2s"
   network_interface_ids = [
     azurerm_network_interface.vniccard01.id
   ]
@@ -120,7 +120,7 @@ resource "azurerm_linux_virtual_machine" "vlinux02" {
   location            = data.azurerm_resource_group.resgroup.location
   resource_group_name = data.azurerm_resource_group.resgroup.name
 
-  size = "Standard_D4_v3"
+  size = "Standard_B2s"
 
 
   network_interface_ids = [
