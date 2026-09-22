@@ -1,0 +1,4 @@
+.terrafom
+*.tfstate
+*.hcl
+*.txt

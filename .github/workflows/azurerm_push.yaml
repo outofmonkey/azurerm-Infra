@@ -1,0 +1,102 @@
+
+name: Terraform AzureRM Test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.tf"
+      - "user-data.sh"
+      - ".github/workflows/azurerm_push.yaml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**/*.tf"
+      - "user-data.sh"
+      - ".github/workflows/azurerm_push.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+
+  # =======================================================
+  # TERRAFORM PLAN
+  # =======================================================
+
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: tfplan
+
+
+  # =======================================================
+  # TERRAFORM APPLY
+  # =======================================================
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    needs:
+      - terraform-plan
+
+    # Apply only after push to main.
+    # PRs will only run Plan.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    # Manual approval is configured through this environment.
+    environment:
+      name: terraform-test
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve

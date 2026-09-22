@@ -1,3 +1,4 @@
+
 terraform {
   required_providers {
     azurerm = {
@@ -11,18 +12,17 @@ provider "azurerm" {
   features {}
 }
 
-# ---------------------------------------------------------
+# =========================================================
 # Resource Group
-# ---------------------------------------------------------
+# =========================================================
 
-resource "azurerm_resource_group" "resgroup" {
-  name     = "my-resource-group"
-  location = "Central India"
+data "azurerm_resource_group" "resgroup" {
+  name = "kml_rg_main-42b879a69547485b"
 }
 
-# ---------------------------------------------------------
+# =========================================================
 # Virtual Network
-# ---------------------------------------------------------
+# =========================================================
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet"
@@ -32,9 +32,9 @@ resource "azurerm_virtual_network" "vnet" {
   address_space = ["172.168.0.0/20"]
 }
 
-# ---------------------------------------------------------
+# =========================================================
 # Subnet
-# ---------------------------------------------------------
+# =========================================================
 
 resource "azurerm_subnet" "psubnet" {
   name                 = "public-subnet"
@@ -44,52 +44,70 @@ resource "azurerm_subnet" "psubnet" {
   address_prefixes = ["172.168.0.0/24"]
 }
 
-# ---------------------------------------------------------
-# Network Interface
-# ---------------------------------------------------------
+# =========================================================
+# Network Security Group
+# =========================================================
 
-resource "azurerm_network_interface" "vniccard" {
-  name                = "nic-linux-vm"
+resource "azurerm_network_security_group" "web_nsg" {
+  name                = "web-nsg"
   location            = azurerm_resource_group.resgroup.location
   resource_group_name = azurerm_resource_group.resgroup.name
 
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.psubnet.id
-    private_ip_address_allocation = "Dynamic"
+  # -------------------------------------------------------
+  # HTTP
+  # -------------------------------------------------------
+
+  security_rule {
+    name                       = "Allow-HTTP"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  # -------------------------------------------------------
+  # HTTPS
+  # -------------------------------------------------------
+
+  security_rule {
+    name                       = "Allow-HTTPS"
+    priority                   = 101
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  # -------------------------------------------------------
+  # SSH
+  # -------------------------------------------------------
+
+  security_rule {
+    name                       = "Allow-SSH"
+    priority                   = 102
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
 }
 
-# ---------------------------------------------------------
-# Linux Virtual Machine
-# ---------------------------------------------------------
+# =========================================================
+# Associate NSG with Subnet
+# =========================================================
 
-resource "azurerm_linux_virtual_machine" "vlinux" {
-  name                = "debbot"
-  location            = azurerm_resource_group.resgroup.location
-  resource_group_name = azurerm_resource_group.resgroup.name
-
-  size           = "Standard_D4_v3"
-  admin_username = "adminuser"
-
-  network_interface_ids = [
-    azurerm_network_interface.vniccard.id
-  ]
-
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
+resource "azurerm_subnet_network_security_group_association" "web_nsg_association" {
+  subnet_id                 = azurerm_subnet.psubnet.id
+  network_security_group_id = azurerm_network_security_group.web_nsg.id
 }
+
