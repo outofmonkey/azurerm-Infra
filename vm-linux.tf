@@ -75,13 +75,16 @@ resource "azurerm_linux_virtual_machine" "vlinux01" {
   ]
 
   # -------------------------------------------------------
-  # SSH Key
+  # SSH Key / Username and Password
   # -------------------------------------------------------
+ admin_username = var.admin_username
+  admin_password = var.admin_password
+  disable_password_authentication = false
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
+  # admin_ssh_key {
+  #   username   = "adminuser"
+  #   public_key = file("~/.ssh/id_rsa.pub")
+  # }
 
   # -------------------------------------------------------
   # OS Disk
@@ -127,13 +130,17 @@ resource "azurerm_linux_virtual_machine" "vlinux02" {
   ]
 
   # -------------------------------------------------------
-  # SSH Key
+  # SSH Key / Username and Password
   # -------------------------------------------------------
+  # admin_ssh_key {
+  #   username   = "adminuser"
+  #   public_key = file("~/.ssh/id_rsa.pub")
+  # }
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
+    admin_username = var.admin_username
+  admin_password = var.admin_password
+  disable_password_authentication = false
+ 
 
   # -------------------------------------------------------
   # OS Disk
