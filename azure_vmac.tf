@@ -38,7 +38,7 @@ resource "azurerm_virtual_network" "vnet" {
 
 resource "azurerm_subnet" "psubnet" {
   name                 = "public-subnet"
-  resource_group_name  = data.data.azurerm_resource_group.resgroup.name
+  resource_group_name  = data.azurerm_resource_group.resgroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
 
   address_prefixes = ["172.168.0.0/24"]
